@@ -29,37 +29,67 @@ object Hackerland {
 
     start = System.currentTimeMillis()
 
-    sum = distances(spanningTree)
+    sum = distances2(spanningTree)
     println("Distances in: " + (System.currentTimeMillis() - start))
     println("Actual=" + sum)
     toBinaryString(sum)
   }
 
-  private def distances(g: Graph[BigInt]): BigInt = {
-    val adjacentVertex: Map[Int, Seq[(Int, BigInt)]] =
+  private def distances2(g: Graph[BigInt]): BigInt = {
+    val adjacentVert: Map[Int, Seq[(Int, BigInt)]] =
       g.flatMap { case (a, b, c) => Seq((a, b, c), (b, a, c)) }
         .groupBy { case (a, _, _) => a }
-        .mapValues(s => s.map { case (a, b, c) => (b, c) })
+        .mapValues(s => s.map { case (_, b, c) => (b, c) })
 
-    val costs = for (e <- g) yield {
-      val countInLeft = countIn(e._1, Set(e._1, e._2), g, adjacentVertex)
-      val countInRight = countIn(e._2, Set(e._1, e._2), g, adjacentVertex)
-      e._3 * countInLeft * countInRight
+    val adjacentVertex = mutable.HashMap(adjacentVert.toSeq: _*)
+    val vertexNum = g.flatMap { case (a, b, _) => Seq(a, b) }.toSet.size
+
+    println("start calculation")
+
+    var edgeN = 0
+
+    val start = System.currentTimeMillis()
+    var timeIn = 0L
+
+    val costs = for (edge <- g) yield {
+      edgeN += 1
+      if (edgeN % 1000 == 0)
+        println("Distance for new edge: " + edgeN + ", time(countIn)/totalTime: " + (timeIn * 1.0/(System.currentTimeMillis() - start)))
+
+      timeIn -= System.currentTimeMillis()
+
+      val watched: Array[Boolean] = Array.fill[Boolean](vertexNum + 1)(false)
+      watched(edge._1) = true
+      watched(edge._2) = true
+
+//      val countInLeft = countIn2(edge._1, watched, g, adjacentVertex)
+      val countInLeft = countIn(edge._1, watched.toArray, adjacentVertex)
+      timeIn += System.currentTimeMillis()
+
+      val countInRight = vertexNum - countInLeft
+      edge._3 * countInLeft * countInRight
     }
 
     costs.sum
   }
 
-  private def countIn(startV: Int, watched: Set[Int], g: Graph[BigInt], adjacentVertex: Map[Int, Seq[(Int, BigInt)]]): Int = {
-    val counts = for (
-      (v, _) <- adjacentVertex(startV)
-      if !watched.contains(v)
-    ) yield {
-      countIn(v, watched + v, g, adjacentVertex)
-    }
-
-    val s = if (counts.isEmpty) 0 else counts.sum
-
-    s + 1
-  }
+//  private def countIn2(startV: Int, watched: Array[Boolean], g: Graph[BigInt], adjacentVertex: mutable.HashMap[Int, Seq[(Int, BigInt)]]): Int = {
+//    val q = mutable.Queue(startV)
+//
+//    var count = 0
+//
+//    while (q.nonEmpty) {
+//      val vertex = q.dequeue()
+//      count += 1
+//
+//      for ((v, _) <- adjacentVertex(vertex)) {
+//        if (!watched(v)) {
+//          watched(v) = true
+//          q.enqueue(v)
+//        }
+//      }
+//    }
+//
+//    count
+//  }
 }
