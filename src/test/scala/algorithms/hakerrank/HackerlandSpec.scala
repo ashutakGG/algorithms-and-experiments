@@ -2,7 +2,7 @@ package algorithms.hakerrank
 
 import java.io.File
 
-import algorithms.hackerrank.HackerlandJava.roadsInHackerland
+import algorithms.hackerrank.Hackerland.roadsInHackerland
 import org.scalatest.FreeSpec
 import org.scalatest.Matchers._
 

@@ -15,6 +15,11 @@ object Hackerland {
     res.mkString
   }
 
+  def tmpmethod(): Unit = {
+    var a = mutable.ListBuffer(1)
+    a = mutable.LinkedList(1)
+  }
+
   def roadsInHackerland(n: Int, roads: Array[Array[Int]]): String = {
     var sum = BigInt(0)
 
@@ -63,7 +68,7 @@ object Hackerland {
       watched(edge._2) = true
 
 //      val countInLeft = countIn2(edge._1, watched, g, adjacentVertex)
-      val countInLeft = countIn(edge._1, watched.toArray, adjacentVertex)
+      val countInLeft = countIn2(edge._1, watched, adjacentVertex)
       timeIn += System.currentTimeMillis()
 
       val countInRight = vertexNum - countInLeft
@@ -73,23 +78,23 @@ object Hackerland {
     costs.sum
   }
 
-//  private def countIn2(startV: Int, watched: Array[Boolean], g: Graph[BigInt], adjacentVertex: mutable.HashMap[Int, Seq[(Int, BigInt)]]): Int = {
-//    val q = mutable.Queue(startV)
-//
-//    var count = 0
-//
-//    while (q.nonEmpty) {
-//      val vertex = q.dequeue()
-//      count += 1
-//
-//      for ((v, _) <- adjacentVertex(vertex)) {
-//        if (!watched(v)) {
-//          watched(v) = true
-//          q.enqueue(v)
-//        }
-//      }
-//    }
-//
-//    count
-//  }
+  private def countIn2(startV: Int, watched: Array[Boolean], adjacentVertex: mutable.HashMap[Int, Seq[(Int, BigInt)]]): Int = {
+    val q = mutable.Queue(startV)
+
+    var count = 0
+
+    while (q.nonEmpty) {
+      val vertex = q.dequeue()
+      count += 1
+
+      for ((v, _) <- adjacentVertex(vertex)) {
+        if (!watched(v)) {
+          watched(v) = true
+          q.enqueue(v)
+        }
+      }
+    }
+
+    count
+  }
 }

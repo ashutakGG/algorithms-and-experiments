@@ -7,7 +7,7 @@ object Graphs {
   type Graph[T] = Seq[Edge[T]]
 
   def minimumSpanningTreeKruskal[T <: Ordered[T]](graph: Graph[T]): Graph[T] = {
-    val disjointSet = new JavaDisjointSetForest[Int]()
+    val disjointSet = new DisjointSetForest[Int]()
 
     val vertexes = graph.flatMap { case (a, b, _) => Seq(a, b) }.toSet
     for (v <- vertexes)
