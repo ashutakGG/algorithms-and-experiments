@@ -6,7 +6,7 @@ import java.util.Arrays;
 public class ArrayDisjointSetForest {
     // Contains information about both: parents and ranks;
     // if array[i] < 0 - it means that 'i' is a root, where |array[i]| - a number of elements in that set.
-    // if array[i] >= 0 - it means that 'i' is a child node and array[i] is refer to root.
+    // if array[i] >= 0 - it means that 'i' is a child node and array[i] is refer to parent.
     private int[] array;
 
     public ArrayDisjointSetForest(int numElements) {
